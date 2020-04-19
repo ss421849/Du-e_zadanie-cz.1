@@ -1,7 +1,10 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
+#include <assert.h>
 
 /*
  * Struktura przechowująca parę liczb
@@ -175,14 +178,16 @@ gamma_t *gamma_new(uint32_t height, uint32_t width, uint32_t players, uint32_t a
         return NULL;
     }
     else {
-        gamma_t *g;
+        gamma_t *g = malloc(sizeof(gamma_t));
 
         g->height = height;
         g->width = width;
 
+        printf("Przed graczami");
         g->number_of_gamers = players;
         g->gamers = create_gamers(players);
 
+        printf("Po graczech");
         g->max_areas = areas;
         g->board = create_board(height, width);
         g->free_fields = width * height;
@@ -610,15 +615,120 @@ char *gamma_board(gamma_t *g) {
     return answer;
 }
 
-int main() {
-    gamma_t *g = gamma_new(10, 10, 3, 3);
-    for (int i = 1; i < 5; i++) {
-        gamma_move(g, 1, 2 * i, 2 * i);
-        printf(gamma_board(g));
-        printf("\n");
+static const char board[] =
+  "1.........\n"
+  "..........\n"
+  "..........\n"
+  "......2...\n"
+  ".....2....\n"
+  "..........\n"
+  "..........\n"
+  "1.........\n"
+  "1221......\n"
+  "1.........\n";
 
-        gamma_move(g, 2, i, i);
-        printf(gamma_board(g));
-        printf("+----------+\n");
-    }
+int main() {
+  gamma_t *g;
+
+  g = gamma_new(0, 0, 0, 0);
+  if(g == NULL)
+    printf("1");
+
+  g = gamma_new(10, 10, 2, 3);
+  if(g != NULL)
+    printf("2");
+  else
+    printf("NUUL");
+
+  if(gamma_move(g, 1, 0, 0))
+    printf("3");
+  if(gamma_busy_fields(g, 1) == 1)
+    printf("4");
+  if(gamma_busy_fields(g, 2) == 0)
+    printf("4");
+  if(gamma_free_fields(g, 1) == 99)
+    printf("4");
+  if(gamma_free_fields(g, 2) == 99)
+    printf("4");
+  if(!gamma_golden_possible(g, 1))
+    printf("4");
+  if(gamma_move(g, 2, 3, 1))
+    printf("4");
+  if(gamma_busy_fields(g, 1) == 1)
+    printf("4");
+  if(gamma_busy_fields(g, 2) == 1)
+    printf("4");
+  if(gamma_free_fields(g, 1) == 98)
+    printf("4");
+  if(gamma_free_fields(g, 2) == 98)
+    printf("4");
+  if(gamma_move(g, 1, 0, 2))
+    printf("4");
+  if(gamma_move(g, 1, 0, 9))
+    printf("4");
+  if(!gamma_move(g, 1, 5, 5))
+    printf("4");
+  if(gamma_free_fields(g, 1) == 6)
+    printf("4");
+  if(gamma_move(g, 1, 0, 1))
+    printf("4");
+  if(gamma_free_fields(g, 1) == 95)
+    printf("4");
+  if(gamma_move(g, 1, 5, 5))
+    printf("4");
+  if(!gamma_move(g, 1, 6, 6))
+    printf("4");
+  if(gamma_busy_fields(g, 1) == 5)
+    printf("4");
+  if(gamma_free_fields(g, 1) == 10)
+    printf("4");
+  if(gamma_move(g, 2, 2, 1))
+    printf("4");
+  if(gamma_move(g, 2, 1, 1))
+    printf("4");
+  if(gamma_free_fields(g, 1) == 9)
+    printf("4");
+  if(gamma_free_fields(g, 2) == 92)
+    printf("4");
+  if(!gamma_move(g, 2, 0, 1))
+    printf("4");
+  if(gamma_golden_possible(g, 2))
+    printf("4");
+  if(!gamma_golden_move(g, 2, 0, 1))
+    printf("4");
+  if(gamma_golden_move(g, 2, 5, 5))
+    printf("4");
+  if(!gamma_golden_possible(g, 2))
+    printf("4");
+  if(gamma_move(g, 2, 6, 6))
+    printf("4");
+  if(gamma_busy_fields(g, 1) == 4)
+    printf("4");
+  if(gamma_free_fields(g, 1) == 91)
+    printf("4");
+  if(gamma_busy_fields(g, 2) == 5)
+    printf("4");
+  if(gamma_free_fields(g, 2) == 13)
+    printf("4");
+  if(gamma_golden_move(g, 1, 3, 1))
+    printf("4");
+  if(gamma_busy_fields(g, 1) == 5)
+    printf("4");
+  if(gamma_free_fields(g, 1) == 8)
+    printf("4");
+  if(gamma_busy_fields(g, 2) == 4)
+    printf("4");
+  if(gamma_free_fields(g, 2) == 10)
+    printf("4");
+
+  char *p = gamma_board(g);
+  if(p)
+    printf("4");
+  if(strcmp(p, board) == 0)
+    printf("4");
+  printf(p);
+  free(p);
+
+  gamma_delete(g);
+  return 0;
 }
